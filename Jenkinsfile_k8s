@@ -1,6 +1,12 @@
 
-def dockerImages = ['docker', 'golang']
+// def dockerImages = ['docker', 'golang']
 
-dockerImages.each { d ->
-  buildDockerAndPublishImage(d, [mainBranch: 'main'])
-}
+// dockerImages.each { d ->
+//   buildDockerAndPublishImage(d, [mainBranch: 'main'])
+// }
+
+
+buildDockerAndPublishImage('docker', [
+  mainBranch: 'main',
+  dockerfile: 'docker/Dockerfile',
+])
