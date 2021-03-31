@@ -9,4 +9,5 @@
 buildDockerAndPublishImage('docker', [
   mainBranch: 'main',
   dockerfile: 'docker/Dockerfile',
+  registry: 'dduportal',
 ])
