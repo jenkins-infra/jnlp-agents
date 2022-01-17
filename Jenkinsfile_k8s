@@ -26,6 +26,12 @@ parallel(
       dockerfile: 'node/Dockerfile',
     ])
   },
+  'python': {
+     buildDockerAndPublishImage('inbound-agent-python', [
+      mainBranch: principalBranch,
+      dockerfile: 'python/Dockerfile',
+    ])
+  },
   'ruby': {
      buildDockerAndPublishImage('inbound-agent-ruby', [
       mainBranch: principalBranch,
