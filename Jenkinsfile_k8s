@@ -1,3 +1,5 @@
+@Library('pipeline-library@pull/390/head') _
+
 parallel(
   failFast: false,
   'maven-jdk8-nanoserver-test-semver': {
