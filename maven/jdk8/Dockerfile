@@ -1,21 +1,36 @@
 # Use Debian base
 FROM jenkins/inbound-agent:jdk8 as jnlp
 
+FROM eclipse-temurin:11.0.16_8-jdk-focal AS jre11-build
+# Generate smaller java runtime without unneeded files
+# for now we include the full module path to maintain compatibility
+# while still saving space (approx 200mb from the full distribution)
+RUN jlink \
+    --add-modules ALL-MODULE-PATH \
+    --strip-debug \
+    --no-man-pages \
+    --no-header-files \
+    --compress=2 \
+    --output /javaruntime
+
 FROM maven:3.8.6-eclipse-temurin-8
 
 ## Ignore apt package pinning as we always want the latest package here
 # hadolint ignore=DL3008
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        bash \
-        git \
-        libfontconfig1 \
-        libfreetype6 && \
+    bash \
+    git \
+    libfontconfig1 \
+    libfreetype6 && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 COPY --from=jnlp /usr/local/bin/jenkins-agent /usr/local/bin/jenkins-agent
 COPY --from=jnlp /usr/share/jenkins/agent.jar /usr/share/jenkins/agent.jar
+
+# Retrieve JDK11 for running jenkins agent process but do not use it as default
+COPY --from=jre11-build /javaruntime /opt/jdk-11
 
 ENTRYPOINT ["/usr/local/bin/jenkins-agent"]
 
