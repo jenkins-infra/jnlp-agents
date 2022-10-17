@@ -1,6 +1,3 @@
-# Use https://github.com/jenkinsci/jnlp-agents as base for now
-# FROM jenkins/jnlp-agent-maven:windows-nanoserver-jdk11 AS jnlp
-
 # escape=`
 FROM mcr.microsoft.com/windows/servercore:1809 as core
 FROM jenkins/inbound-agent:jdk11-nanoserver-1809
