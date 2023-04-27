@@ -41,12 +41,14 @@ RUN Invoke-WebRequest -Uri "https://www.python.org/ftp/python/${env:PYTHON_VERSI
 # # hadolint ignore=DL3059
 # RUN "C:/tools/Python311/python.exe" -m pip install --no-cache-dir launchable=="${env:LAUNCHABLE_VERSION}";
 # hadolint ignore=DL3059
-RUN Start-Process -FilePath "C:/tmp/install-python.exe" -ArgumentList "/quiet","InstallAllUsers=1","PrependPath=1","Install_test=0","TargetDir='C:/tools/python'"
+RUN Start-Process -FilePath "C:/tmp/install-python.exe" -ArgumentList "/quiet","InstallAllUsers=1","PrependPath=1","Install_test=0","TargetDir='C:/tools/python'";
 #& "C:/tmp/install-python.exe" /quiet InstallAllUsers=1 PrependPath=1;
 # hadolint ignore=DL3059
 RUN Remove-Item "C:/tmp/" -Recurse -Force;
 # hadolint ignore=DL3059
 # RUN Move-Item -Path "C:/Program File/Python311/" -Destination "C:/tools/";
+# hadolint ignore=DL3059
+RUN Start-Process -FilePath "C:/tools/python/python.exe" -ArgumentList "--version";
 # hadolint ignore=DL3059
 RUN Start-Process -FilePath "C:/tools/python/python.exe" -ArgumentList "-m","pip","install","--no-cache-dir","--upgrade","setuptools","wheel","pip";
 # hadolint ignore=DL3059
