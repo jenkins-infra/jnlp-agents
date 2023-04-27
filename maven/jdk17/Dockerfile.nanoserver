@@ -26,17 +26,19 @@ RUN Invoke-WebRequest -Uri "https://archive.apache.org/dist/maven/maven-3/${env:
 ARG PYTHON_VERSION=3.11.3
 ARG LAUNCHABLE_VERSION=1.63.0
 # hadolint ignore=DL3059
-RUN New-Item -ItemType Directory -Force -Path C:/tmp;
+RUN New-Item -ItemType Directory -Path C:/tmp;
 # hadolint ignore=DL3059
 RUN Invoke-WebRequest -Uri "https://www.python.org/ftp/python/${env:PYTHON_VERSION}/python-${env:PYTHON_VERSION}-amd64.exe" -OutFile "C:/tmp/install-python.exe";
 # hadolint ignore=DL3059
-RUN & "C:/tmp/install-python.exe" /passive InstallAllUsers=1 PrependPath=1 Include_test=0;
+RUN & "C:/tmp/install-python.exe" /quiet InstallAllUsers=1 PrependPath=1 Include_test=0;
 # hadolint ignore=DL3059
 RUN Remove-Item "C:/tmp/" -Recurse;
 # hadolint ignore=DL3059
-RUN & "C:/python311/python.exe" -m pip --no-cache-dir --upgrade install setuptools wheel pip;
+RUN Move-Item -Path "C:/Program File/Python311/" -Destination "C:/tools/";
 # hadolint ignore=DL3059
-RUN & "C:/python311/python.exe" -m pip --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}";
+RUN & "C:/tools/Python311/python.exe" -m pip install --no-cache-dir --upgrade setuptools wheel pip;
+# hadolint ignore=DL3059
+RUN & "C:/tools/Python311/python.exe" -m pip install --no-cache-dir launchable=="${env:LAUNCHABLE_VERSION}";
 
 ENV MAVEN_HOME "C:/tools/apache-maven-${MAVEN_VERSION}"
-ENV PATH="${JAVA_HOME}/bin;${PATH};${MAVEN_HOME}/bin;C:/python311/Scripts/"
+ENV PATH="${JAVA_HOME}/bin;${PATH};${MAVEN_HOME}/bin;C:/tools/Python311/Scripts/"
