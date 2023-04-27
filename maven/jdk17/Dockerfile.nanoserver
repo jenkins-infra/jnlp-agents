@@ -30,7 +30,7 @@ RUN New-Item -ItemType Directory -Force -Path C:\tmp; `
   & "C:\tmp\install-python.exe" /passive InstallAllUsers=1 PrependPath=1 Include_test=0; `
   Remove-Item "C:\tmp\" -Recurse; `
   & "C:\python311\python.exe" -m pip --no-cache-dir --upgrade install setuptools wheel pip; `
-  & "C:\python311\python.exe" -m pip --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}"; `
+  & "C:\python311\python.exe" -m pip --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}";
 
 ENV MAVEN_HOME "C:\tools\apache-maven-${MAVEN_VERSION}"
 ENV PATH="${JAVA_HOME}\bin;${PATH};${MAVEN_HOME}\bin;C:\python311\Scripts\"
