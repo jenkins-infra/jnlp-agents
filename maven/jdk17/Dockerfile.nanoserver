@@ -46,10 +46,11 @@ RUN Start-Process -FilePath "C:/tmp/install-python.exe" -ArgumentList "/quiet","
 # hadolint ignore=DL3059
 RUN Remove-Item "C:/tmp/" -Recurse -Force;
 # hadolint ignore=DL3059
-RUN dir %ProgramFiles%
+RUN dir "${env:ProgramFiles}"
 # hadolint ignore=DL3059
 RUN dir C:/tools
-# RUN Move-Item -Path "C:/Program File/Python311/" -Destination "C:/tools/";
+# hadolint ignore=DL3059
+RUN Move-Item -Path "${env:ProgramFiles}/Python311/" -Destination "C:/tools/python";
 # hadolint ignore=DL3059
 RUN Start-Process -FilePath "C:/tools/python/python.exe" -ArgumentList "--version";
 # hadolint ignore=DL3059
