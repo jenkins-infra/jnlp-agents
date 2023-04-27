@@ -25,12 +25,12 @@ RUN Invoke-WebRequest -Uri "https://archive.apache.org/dist/maven/maven-3/${env:
 # Installation of Launchable globally (no other python tool)
 ARG PYTHON_VERSION=3.11.3
 ARG LAUNCHABLE_VERSION=1.63.0
-RUN New-Item -ItemType Directory -Force -Path C:\tmp;
-  Invoke-WebRequest -Uri "https://www.python.org/ftp/python/${env:PYTHON_VERSION}/python-${env:PYTHON_VERSION}-amd64.exe" -OutFile "C:\tmp\install-python.exe";
-  & "C:\tmp\install-python.exe" /passive InstallAllUsers=1 PrependPath=1 Include_test=0;
-  & "C:\python311\python.exe" -m pip --no-cache-dir --upgrade install setuptools wheel pip;
-  & "C:\python311\python.exe" -m pip --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}";
-  Remove-Item C:\tmp;
+RUN New-Item -ItemType Directory -Force -Path C:\tmp; `
+  Invoke-WebRequest -Uri "https://www.python.org/ftp/python/${env:PYTHON_VERSION}/python-${env:PYTHON_VERSION}-amd64.exe" -OutFile "C:\tmp\install-python.exe"; `
+  & "C:\tmp\install-python.exe" /passive InstallAllUsers=1 PrependPath=1 Include_test=0; `
+  Remove-Item C:\tmp; `
+  & "C:\python311\python.exe" -m pip --no-cache-dir --upgrade install setuptools wheel pip; `
+  & "C:\python311\python.exe" -m pip --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}"; `
 
 ENV MAVEN_HOME "C:\tools\apache-maven-${MAVEN_VERSION}"
 ENV PATH="${JAVA_HOME}\bin;${PATH};${MAVEN_HOME}\bin;C:\python311\Scripts\"
