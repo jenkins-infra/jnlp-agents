@@ -30,7 +30,7 @@ RUN New-Item -ItemType Directory -Path C:/tmp;
 # hadolint ignore=DL3059
 RUN Invoke-WebRequest -Uri "https://www.python.org/ftp/python/${env:PYTHON_VERSION}/python-${env:PYTHON_VERSION}-amd64.exe" -OutFile "C:/tmp/install-python.exe";
 # hadolint ignore=DL3059
-RUN & "C:/tmp/install-python.exe" /quiet InstallAllUsers=1 PrependPath=1 Include_test=0;
+RUN & "C:/tmp/install-python.exe" /quiet InstallAllUsers=1 PrependPath=1;
 # hadolint ignore=DL3059
 RUN Remove-Item "C:/tmp/" -Recurse;
 # hadolint ignore=DL3059
