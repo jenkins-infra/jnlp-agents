@@ -28,7 +28,7 @@ ARG LAUNCHABLE_VERSION=1.63.0
 RUN New-Item -ItemType Directory -Force -Path C:\tmp; `
   Invoke-WebRequest -Uri "https://www.python.org/ftp/python/${env:PYTHON_VERSION}/python-${env:PYTHON_VERSION}-amd64.exe" -OutFile "C:\tmp\install-python.exe"; `
   & "C:\tmp\install-python.exe" /passive InstallAllUsers=1 PrependPath=1 Include_test=0; `
-  Remove-Item C:\tmp; `
+  Remove-Item "C:\tmp\" -Recurse; `
   & "C:\python311\python.exe" -m pip --no-cache-dir --upgrade install setuptools wheel pip; `
   & "C:\python311\python.exe" -m pip --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}"; `
 
