@@ -44,7 +44,7 @@ RUN Invoke-WebRequest -Uri "https://www.python.org/ftp/python/${env:PYTHON_VERSI
 RUN Start-Process -FilePath "C:/tmp/install-python.exe" -ArgumentList "/quiet","InstallAllUsers=1","PrependPath=1","Install_test=0";
 #& "C:/tmp/install-python.exe" /quiet InstallAllUsers=1 PrependPath=1;
 # hadolint ignore=DL3059
-Start-Sleep -Seconds 30 
+RUN Start-Sleep -Seconds 30 
 # hadolint ignore=DL3059
 RUN Remove-Item "C:/tmp/" -Recurse -Force;
 # hadolint ignore=DL3059
