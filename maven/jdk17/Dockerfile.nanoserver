@@ -29,8 +29,10 @@ ARG LAUNCHABLE_VERSION=1.63.0
 
 
 # https://community.chocolatey.org/install.ps1
-COPY .\installChocolatey.ps1 .\installChocolatey.ps1
-RUN .\installChocolatey.ps1
+COPY .\installChocolatey.ps1 "${env:TEMP}/installChocolatey.ps1"
+RUN "${env:TEMP}/installChocolatey.ps1"
+# hadolint ignore=DL3059
+RUN Remove-Item "${env:TEMP}/installChocolatey.ps1";
 
 # hadolint ignore=DL3059
 RUN dir "${env:ProgramFiles}"
