@@ -9,6 +9,7 @@ ENV LAUNCHABLE_VERSION=1.63.0
 # hadolint ignore=SC3057,DL3013
 RUN "C:/Python/python.exe" -m pip install --no-cache-dir --upgrade pip; `
   pip install --no-cache-dir setuptools wheel; `
+  dir env:LAUNCHABLE_VERSION; `
   pip install --no-cache-dir launchable=="${env:LAUNCHABLE_VERSION}";
 
 FROM eclipse-temurin:${JAVA_VERSION}-jdk-windowsservercore-1809 AS core
