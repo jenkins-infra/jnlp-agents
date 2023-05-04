@@ -17,3 +17,5 @@ RUN Invoke-WebRequest -Uri "https://archive.apache.org/dist/maven/maven-3/${env:
 
 ENV MAVEN_HOME "C:\tools\apache-maven-${MAVEN_VERSION}"
 ENV PATH="${PATH};${MAVEN_HOME}\bin"
+
+USER jenkins
