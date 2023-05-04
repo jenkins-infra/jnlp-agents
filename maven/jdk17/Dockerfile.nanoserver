@@ -2,10 +2,10 @@
 ARG JAVA_VERSION=17.0.6_10
 ARG JAVA11_IMAGE_VERSION=3107.v665000b_51092-5
 ARG PYTHON_VERSION=3.11.3
+ARG LAUNCHABLE_VERSION=1.63.0
 
 FROM python:"${PYTHON_VERSION}"-windowsservercore-1809 AS python
 
-ARG LAUNCHABLE_VERSION=1.63.0
 # hadolint ignore=SC3057,DL3013
 RUN "C:/Python/python.exe" -m pip install --no-cache-dir --upgrade pip; `
   pip install --no-cache-dir setuptools wheel; `
@@ -24,7 +24,7 @@ ENV PYTHON_PATH=C:/tools/python/;C:/tools/python/Scripts/;
 COPY --from=python C:/Python C:/tools/python
 RUN dir C:/tools/;
 # hadolint ignore=DL3059
-RUN dir C:/tools/python/;
+RUN dir C:/tools/python/Scripts;
 
 # Adding jdk17 from eclipse-temurin
 # Use ENV and not ARG : https://docs.docker.com/engine/reference/builder/#using-arg-variables
