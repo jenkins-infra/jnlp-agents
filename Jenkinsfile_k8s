@@ -22,7 +22,7 @@ parallel(
       platform: 'windows/amd64',
       imageDir: 'maven/jdk17',
     ])
-  // },
+  },
   // 'maven-jdk19-nanoserver': {
   //   buildDockerAndPublishImage('inbound-agent-maven:jdk19-nanoserver', [
   //     dockerfile: 'maven/jdk19/Dockerfile.nanoserver',
