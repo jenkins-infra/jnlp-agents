@@ -1,6 +1,31 @@
 # escape=`
+ARG PYTHON_VERSION=3.11.3
+
+
 ARG JAVA_VERSION=17.0.6_10
 ARG JAVA11_IMAGE_VERSION=3107.v665000b_51092-5
+
+
+# # first layer is our python base image enabling us to run pip
+FROM python:"${PYTHON_VERSION}"-windowsservercore-1809 AS python
+
+# hadolint ignore=DL3059
+RUN dir C:/
+# hadolint ignore=DL3059
+RUN "C:/Python/python.exe" -m pip install --no-cache-dir --upgrade pip
+# hadolint ignore=DL3059
+RUN pip install --no-cache-dir setuptools wheel
+# hadolint ignore=DL3059
+RUN pip install --no-cache-dir launchable
+# hadolint ignore=DL3059
+RUN dir C:/Python/Scripts
+
+# hadolint ignore=DL3059
+RUN & "C:/Python/Scripts/launchable.exe" --version
+
+ARG JAVA_VERSION=17.0.6_10
+ARG JAVA11_IMAGE_VERSION=3107.v665000b_51092-5
+
 
 FROM eclipse-temurin:${JAVA_VERSION}-jdk-windowsservercore-1809 AS core
 # Use inbound-agent's JDK11 only for running jenkins agent, not as default java
@@ -14,6 +39,34 @@ SHELL ["pwsh.exe", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPrefer
 ENV JAVA_HOME=C:/tools/jdk-17
 COPY --from=core C:/openjdk-17 "${JAVA_HOME}"
 
+
+
+
+
+
+COPY --from=python C:/Python C:/tools/python
+
+# hadolint ignore=DL3059
+RUN dir C:/tools/python/Scripts
+
+USER ContainerAdministrator
+RUN $env:PATH = [Environment]::GetEnvironmentVariable('PATH', [EnvironmentVariableTarget]::Machine);
+
+ENV PYTHONPATH=C:/tools/python/;C:/tools/python/Scripts/;
+# hadolint ignore=DL3059
+RUN setx.exe /m Path ${env:PYTHONPATH};${env:Path}
+# hadolint ignore=DL3059
+RUN dir env:
+#RUN setx.exe /M PATH "%PATH%;C:/tools/python/;C:/tools/python/Scripts/;"
+USER ContainerUser
+
+# hadolint ignore=DL3059
+#RUN & "launchable.exe" --version
+
+
+
+
+
 # https://github.com/StefanScherer/dockerfiles-windows/tree/master/golang-issue-21867
 COPY --from=core C:/windows/system32/netapi32.dll C:/windows/system32/netapi32.dll
 
@@ -22,29 +75,176 @@ RUN Invoke-WebRequest -Uri "https://archive.apache.org/dist/maven/maven-3/${env:
   Expand-Archive -Path "${env:TEMP}/apache-maven.zip -Destination" C:/tools ; `
   Remove-Item ${env:TEMP}/apache-maven.zip ;
 
-# Installation of Launchable globally (no other python tool)
-ARG PYTHON_VERSION=3.11.3
-ARG LAUNCHABLE_VERSION=1.63.0
+# COPY --from=python C:/Python/Scripts/launchable.exe C:/tools/
+# COPY --from=python C:/Python/python3.dll C:/tools/
+# COPY --from=python C:/Python/python311.dll C:/tools/
+
+# # hadolint ignore=DL3059
+# RUN dir C:/tools/
+
+# # hadolint ignore=DL3059
+# #RUN & "C:/tools/launchable.exe" --version
+# #RUN Start-Process -FilePath "C:/tools/launchable.exe" -Wait ArgumentList '--version'
+
+# # Installation of Launchable globally (no other python tool)
+# ARG PYTHON_VERSION=3.11.3
+# ARG LAUNCHABLE_VERSION=1.63.0
 
 
 
-# https://community.chocolatey.org/install.ps1
-COPY .\installChocolatey.ps1 "C:/tools/installChocolatey.ps1"
-RUN "& 'C:/tools/installChocolatey.ps1' %*"
-# powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "& '%DIR%install.ps1' %*"
+# #02/05/23
+
+# # hadolint ignore=DL3059
+# RUN Invoke-WebRequest -Uri "https://www.python.org/ftp/python/${env:PYTHON_VERSION}/python-${env:PYTHON_VERSION}-amd64.exe" -OutFile "${env:TEMP}/install-python.exe";
+# # hadolint ignore=DL3059
+# RUN dir "${env:TEMP}"
+# # hadolint ignore=DL3059
+# RUN Start-Process -FilePath "${env:TEMP}/install-python.exe" -Wait -ArgumentList @('/quiet', 'InstallAllUsers=1', 'TargetDir=C:\tools\python', 'PrependPath=1', 'Shortcuts=0', 'Include_doc=0', 'Include_pip=1', 'Include_test=0');
+
+# # hadolint ignore=DL3059
+# RUN dir env:
+# # hadolint ignore=DL3059
+# RUN dir C:/tools/
+# # hadolint ignore=DL3059
+# RUN dir C:/tools/python/
+
+# #the installer updated PATH, so we should refresh our local value
+# # hadolint ignore=DL3059
+# RUN $env:PATH = [Environment]::GetEnvironmentVariable('PATH', [EnvironmentVariableTarget]::Machine);
+# # hadolint ignore=DL3059
+# RUN dir env:
+
+# # hadolint ignore=DL3059
+# #RUN python --version;
+# # hadolint ignore=DL3059
+# # RUN dir -r python.exe
+# # hadolint ignore=DL3059
+# RUN Remove-Item "${env:TEMP}/install-python.exe" -Force;
 # hadolint ignore=DL3059
-RUN Remove-Item "C:/tools/installChocolatey.ps1";
+#RUN dir C:/tools/
+# hadolint ignore=DL3059
+#RUN dir C:/tools/python/
+
+# RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}-amd64.exe' -f $env:PYTHON_VERSION, $env:PYTHON_VERSION); \
+# 	#Write-Host ('Downloading {0} ...' -f $url); \
+# 	#[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
+# 	Invoke-WebRequest -Uri "" -OutFile 'python.exe'; \
+# 	\
+# 	Write-Host 'Installing ...'; \
+# # https://docs.python.org/3.7/using/windows.html#installing-without-ui
+# 	Start-Process python.exe -Wait \
+# 		-ArgumentList @( \
+# 			'/quiet', \
+# 			'InstallAllUsers=1', \
+# 			'TargetDir=C:\tools\python', \
+# 			'PrependPath=1', \
+# 			'Shortcuts=0', \
+# 			'Include_doc=0', \
+# 			'Include_pip=0', \
+# 			'Include_test=0' \
+# 		); \
+# 	\
+# #the installer updated PATH, so we should refresh our local value
+# 	$env:PATH = [Environment]::GetEnvironmentVariable('PATH', [EnvironmentVariableTarget]::Machine); \
+# 	\
+# 	Write-Host 'Verifying install ...'; \
+# 	Write-Host '  python --version'; python --version; \
+# 	\
+# 	Write-Host 'Removing ...'; \
+# 	Remove-Item python.exe -Force; \
+# 	\
+# 	Write-Host 'Complete.'
+
+
+
+# COPY .\installChocolatey.ps1 "C:/tools/installChocolatey.ps1"
+# COPY .\install_launchable.ps1 "C:/tools/install_launchable.ps1"
+# #RUN Invoke-Expression "C:/tools/installChocolatey.ps1"
+# #RUN SET "PATH=${env:PATH};${env:ALLUSERSPROFILE}/chocolatey/bin"; iwr https://chocolatey.org/install.ps1 -UseBasicParsing | iex
+
+
+
+# ENV MAVEN_HOME "C:/tools/apache-maven-${MAVEN_VERSION}"
+# ENV PATH="${JAVA_HOME}/bin;${PATH};${MAVEN_HOME}/bin;C:/tools/python/Scripts/;C:/tools/python/"
+
+
+# # hadolint ignore=DL3059
+# RUN Invoke-WebRequest -Uri "https://www.python.org/ftp/python/${env:PYTHON_VERSION}/python-${env:PYTHON_VERSION}-embed-amd64.zip" -OutFile "${env:TEMP}/install-python.zip";
+# # hadolint ignore=DL3059
+# RUN Expand-Archive -Path "${env:TEMP}/install-python.zip -Destination" C:/tools/python
+# # hadolint ignore=DL3059
+# RUN Invoke-WebRequest -Uri "https://bootstrap.pypa.io/pip/pip.pyz" -OutFile "C:/tools/python/pip.pyz";
+# # # hadolint ignore=DL3059
+# # RUN dir C:/tools/python
+# #RUN Start-Process -FilePath "C:/tools/python/python.exe" -ArgumentList "-m pip install --no-cache-dir --upgrade setuptools wheel pip";
+# #RUN Start-Process -FilePath "C:/tools/python/python.exe" -ArgumentList "-m","pip","install","--no-cache-dir","--upgrade","setuptools","wheel","pip";
+# # hadolint ignore=DL3059
+# RUN Invoke-Expression "C:/tools/install_launchable.ps1"
+# #RUN Start-Process -FilePath "C:/tools/python/python.exe" -ArgumentList "-m","pip","install","--no-cache-dir","launchable==${env:LAUNCHABLE_VERSION}";
+
+
+
+
+
+
+
 
 # hadolint ignore=DL3059
-RUN dir "${env:ProgramFiles}"
+#RUN Invoke-WebRequest -Uri "https://www.python.org/ftp/python/${env:PYTHON_VERSION}/python-${env:PYTHON_VERSION}-amd64.exe" -OutFile "${env:TEMP}/install-python.exe";
+# # hadolint ignore=DL3059
+# # RUN "C:/tmp/install-python.exe" /quiet;
+# # # RUN "C:/tmp/install-python.exe" /quiet InstallAllUsers=1 PrependPath=1;
+# # # hadolint ignore=DL3059
+# # RUN Remove-Item "C:/tmp/" -Recurse;
+# # # hadolint ignore=DL3059
+# # RUN Move-Item -Path "C:/Program File/Python311/" -Destination "C:/tools/";
+# # # hadolint ignore=DL3059
+# # RUN "C:/tools/Python311/python.exe" -m pip install --no-cache-dir --upgrade setuptools wheel pip;
+# # # hadolint ignore=DL3059
+# # RUN "C:/tools/Python311/python.exe" -m pip install --no-cache-dir launchable=="${env:LAUNCHABLE_VERSION}";
 # hadolint ignore=DL3059
-RUN dir "C:/"
+#RUN Start-Process -FilePath "${env:TEMP}/install-python.exe" -ArgumentList "/quiet","InstallAllUsers=0","PrependPath=1","Include_test=0";
 # hadolint ignore=DL3059
-RUN dir "C:/${env:ProgramData}/Chocolatey/"
+# RUN dir -r python.exe
+# # hadolint ignore=DL3059
+# #RUN py
+
+# # nuget: https://api.nuget.org/v3-flatcontainer/nuget.commandline/index.json
+# ARG NUGET_VERSION=6.5.0
+# # hadolint ignore=DL3059
+# #RUN Invoke-WebRequest -Uri "https://dist.nuget.org/win-x86-commandline/v${env:NUGET_VERSION}/nuget.exe" -OutFile C:/tools/nuget.exe;
+# # hadolint ignore=DL3059
+# #RUN cd C:/tools/; Start-Process -FilePath "C:/tools/nuget.exe" -ArgumentList "install","python","-Version","${env:PYTHON_VERSION}","-Verbosity","detailed","-OutputDirectory","C:/tools/"
+# # RUN cd C:/tools/; & "./nuget.exe install python -Version ${env:PYTHON_VERSION}"
+# # hadolint ignore=DL3059
+# #RUN dir -r python.exe
+# # hadolint ignore=DL3059
+# RUN dir "${env:USERPROFILE}"
+# # hadolint ignore=DL3059
+# RUN dir "${env:ProgramData}"
+# # hadolint ignore=DL3059
+# RUN dir env:
+# # hadolint ignore=DL3059
+# RUN dir "${env:ProgramFiles}"
+# # hadolint ignore=DL3059
+# RUN dir C:/tools/
+# # hadolint ignore=DL3059
+# RUN dir C:/tools/python/
+# # hadolint ignore=DL3059
+# RUN dir C:/tools/python/Scripts/
+
 # hadolint ignore=DL3059
-RUN Start-Process -FilePath "C:/${env:ProgramData}/Chocolatey/bin/choco.exe" -ArgumentList "install","python3","--yes","--no-progress","--limit-output","--fail-on-error-output","--version","${env:PYTHON3_VERSION}"
+#RUN Move-Item -Path "C:/tools/python.${env:PYTHON_VERSION}/tools/" -Destination "C:/tools/python/";
 # hadolint ignore=DL3059
-RUN dir "C:/"
+#RUN Start-Process -FilePath "C:/tools/python/python.exe" -ArgumentList "-m","pip","install","--no-cache-dir","--upgrade","setuptools","wheel","pip";
+# hadolint ignore=DL3059
+#RUN Start-Process -FilePath "C:/tools/python/python.exe" -ArgumentList "-m","pip","install","--no-cache-dir","launchable==${env:LAUNCHABLE_VERSION}";
+# hadolint ignore=DL3059
+#RUN Remove-Item "C:/tools/nuget.exe";
+# hadolint ignore=DL30590
+#RUN Remove-Item "C:/tools/python.${env:PYTHON_VERSION}" -Recurse;
+
+
 
 
 # # hadolint ignore=DL3059
@@ -78,7 +278,31 @@ RUN dir "C:/"
 # # hadolint ignore=DL3059
 # RUN Start-Process -FilePath "C:/tools/python/python.exe" -ArgumentList "-m","pip","install","--no-cache-dir","--upgrade","setuptools","wheel","pip";
 # # hadolint ignore=DL3059
-# RUN Start-Process -FilePath "C:/tools/python/python.exe" -ArgumentList "-m","pip","install","--no-cache-dir","launchable==${env:LAUNCHABLE_VERSION}";
+#RUN Start-Process -FilePath "C:/tools/python/python.exe" -ArgumentList "-m","pip","install","--no-cache-dir","launchable==${env:LAUNCHABLE_VERSION}";
+#RUN & "C:/tools/python/Scripts/pip3.exe install --no-cache-dir launchable==${env:LAUNCHABLE_VERSION}";
+# RUN & "C:/tools/python/python.exe" C:/tools/python/pip.pyz install --no-cache-dir --upgrade pip;
+# hadolint ignore=DL3059
+#KO RUN & "C:/tools/python/python.exe" -m ensurepip;
+
+# hadolint ignore=DL3059
+# RUN & "C:/tools/python/python.exe" -m venv "C:/venv/";
+
+
+
+# # hadolint ignore=DL3059
+# RUN dir C:/tools/python/Scripts/
+# # hadolint ignore=DL3059
+# RUN $env:PATH = [Environment]::GetEnvironmentVariable('PATH', [EnvironmentVariableTarget]::Machine);
+# # hadolint ignore=DL3059
+# #KO "no module named pip" RUN & "C:/tools/python/Scripts/pip3.exe" install --no-cache-dir setuptools;
+# # hadolint ignore=DL3059
+# RUN & "C:/tools/python/python.exe" C:/tools/python/pip.pyz install --no-cache-dir setuptools;
+# # hadolint ignore=DL3059
+# RUN dir C:/tools/python/Scripts/
+# # hadolint ignore=DL3059
+# RUN & "C:/tools/python/python.exe" C:/tools/python/pip.pyz install --no-cache-dir launchable=="${env:LAUNCHABLE_VERSION}";
+
 
 ENV MAVEN_HOME "C:/tools/apache-maven-${MAVEN_VERSION}"
-ENV PATH="${JAVA_HOME}/bin;${PATH};${MAVEN_HOME}/bin;C:/tools/python/Scripts/"
+ENV PATH="${PYTHONPATH};${JAVA_HOME}/bin;${PATH};${MAVEN_HOME}/bin;"
+
