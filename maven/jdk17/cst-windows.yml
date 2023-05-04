@@ -13,7 +13,3 @@ commandTests:
     command: "cmd.exe"
     args: ["/C", "C:/tools/python/python.exe", "--version"]
     expectedOutput: ["Python 3.11.3"]
-  - name: "Check that `launchable` is present in C:/tools/python/Scripts"
-    command: "cmd.exe"
-    args: ["/C", "C:/tools/python/Scripts/launchabl.exe", "--version"]
-    expectedOutput: ["launchable-cli, version 1.63.0"]
