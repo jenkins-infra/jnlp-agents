@@ -1,20 +1,20 @@
 parallel(
   failFast: false,
-  'maven-jdk8-nanoserver': {
-    buildDockerAndPublishImage('inbound-agent-maven:jdk8-nanoserver', [
-      dockerfile: 'maven/jdk8/Dockerfile.nanoserver',
-      agentLabels: 'docker-windows-2019 && amd64',
-      platform: 'windows/amd64',
-      imageDir: 'maven/jdk8',
-    ])
-  },
-  'maven-jdk11-nanoserver': {
-    buildDockerAndPublishImage('inbound-agent-maven:jdk11-nanoserver', [
-      dockerfile: 'maven/jdk11/Dockerfile.nanoserver',
-      agentLabels: 'docker-windows-2019 && amd64',
-      platform: 'windows/amd64',
-    ])
-  },
+  // 'maven-jdk8-nanoserver': {
+  //   buildDockerAndPublishImage('inbound-agent-maven:jdk8-nanoserver', [
+  //     dockerfile: 'maven/jdk8/Dockerfile.nanoserver',
+  //     agentLabels: 'docker-windows-2019 && amd64',
+  //     platform: 'windows/amd64',
+  //     imageDir: 'maven/jdk8',
+  //   ])
+  // },
+  // 'maven-jdk11-nanoserver': {
+  //   buildDockerAndPublishImage('inbound-agent-maven:jdk11-nanoserver', [
+  //     dockerfile: 'maven/jdk11/Dockerfile.nanoserver',
+  //     agentLabels: 'docker-windows-2019 && amd64',
+  //     platform: 'windows/amd64',
+  //   ])
+  // },
   'maven-jdk17-nanoserver': {
     buildDockerAndPublishImage('inbound-agent-maven:jdk17-nanoserver', [
       dockerfile: 'maven/jdk17/Dockerfile.nanoserver',
@@ -22,31 +22,31 @@ parallel(
       platform: 'windows/amd64',
       imageDir: 'maven/jdk17',
     ])
-  },
-  'maven-jdk19-nanoserver': {
-    buildDockerAndPublishImage('inbound-agent-maven:jdk19-nanoserver', [
-      dockerfile: 'maven/jdk19/Dockerfile.nanoserver',
-      agentLabels: 'docker-windows-2019 && amd64',
-      platform: 'windows/amd64',
-      imageDir: 'maven/jdk19',
-    ])
-  },
-  'jdk11-windowsservercore-1809': {
-    buildDockerAndPublishImage('inbound-agent:jdk11-windowsservercore-1809', [
-      dockerfile: 'base/jdk11/Dockerfile.windowsservercore-1809',
-      agentLabels: 'docker-windows-2019 && amd64',
-      platform: 'windows/amd64',
-    ])
-  },
-  'node': {
-    buildDockerAndPublishImage('inbound-agent-node', [
-      dockerfile: 'node/Dockerfile',
-    ])
-  },
-  'updatecli': {
-    updatecli(action: 'diff')
-    if (env.BRANCH_IS_PRIMARY) {
-      updatecli(action: 'apply', cronTriggerExpression: '@weekly')
-    }
-  },
+  // },
+  // 'maven-jdk19-nanoserver': {
+  //   buildDockerAndPublishImage('inbound-agent-maven:jdk19-nanoserver', [
+  //     dockerfile: 'maven/jdk19/Dockerfile.nanoserver',
+  //     agentLabels: 'docker-windows-2019 && amd64',
+  //     platform: 'windows/amd64',
+  //     imageDir: 'maven/jdk19',
+  //   ])
+  // },
+  // 'jdk11-windowsservercore-1809': {
+  //   buildDockerAndPublishImage('inbound-agent:jdk11-windowsservercore-1809', [
+  //     dockerfile: 'base/jdk11/Dockerfile.windowsservercore-1809',
+  //     agentLabels: 'docker-windows-2019 && amd64',
+  //     platform: 'windows/amd64',
+  //   ])
+  // },
+  // 'node': {
+  //   buildDockerAndPublishImage('inbound-agent-node', [
+  //     dockerfile: 'node/Dockerfile',
+  //   ])
+  // },
+  // 'updatecli': {
+  //   updatecli(action: 'diff')
+  //   if (env.BRANCH_IS_PRIMARY) {
+  //     updatecli(action: 'apply', cronTriggerExpression: '@weekly')
+  //   }
+  // },
 )
