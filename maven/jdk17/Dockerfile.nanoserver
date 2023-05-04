@@ -22,7 +22,9 @@ SHELL ["pwsh.exe", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPrefer
 # Adding python
 ENV PYTHON_PATH=C:/tools/python/;C:/tools/python/Scripts/;
 COPY --from=python C:/Python C:/tools/python
-RUN setx.exe /m Path ${env:PYTHON_PATH};${env:Path}
+RUN dir C:/tools/;
+# hadolint ignore=DL3059
+RUN dir C:/tools/python/;
 
 # Adding jdk17 from eclipse-temurin
 # Use ENV and not ARG : https://docs.docker.com/engine/reference/builder/#using-arg-variables
