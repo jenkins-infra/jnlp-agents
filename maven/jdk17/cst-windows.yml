@@ -9,11 +9,11 @@ commandTests:
     command: "cmd.exe"
     args: ["/C", "C:/openjdk-11/bin/java", "--version"]
     expectedOutput: ["Temurin-11"]
-  - name: "Check that `python 3` is present in C:/python311"
+  - name: "Check that `python 3` is present in C:/tools/python"
     command: "cmd.exe"
-    args: ["/C", "C:/python311/python.exe", "--version"]
+    args: ["/C", "C:/tools/python/python.exe", "--version"]
     expectedOutput: ["Python 3.11.3"]
-  - name: "Check that `launchable` is present in C:/python311/Scripts"
+  - name: "Check that `launchable` is present in C:/tools/python/Scripts"
     command: "cmd.exe"
-    args: ["/C", "C:/python311/Scripts/launchable.exe", "--version"]
+    args: ["/C", "C:/tools/python/Scripts/launchable.exe", "--version"]
     expectedOutput: ["launchable-cli, version 1.63.0"]
