@@ -14,20 +14,20 @@ scms:
       branch: "{{ .github.branch }}"
 
 sources:
-  getPackerImageDeployedVersion:
+  getDeployedPackerImagesVersion:
     kind: yaml
     name: Retrieve the current version of the Packer images used in production in jenkins-infra/jenkins-infra
     spec:
       file: https://raw.githubusercontent.com/jenkins-infra/jenkins-infra/production/hieradata/common.yaml
       key: "profile::jenkinscontroller::jcasc.agent_images.azure_vms_gallery_image.version"
   # Retrieving Launchable from packer-images to synchronize its version across our infra
-  geLaunchableVersionFromPackerImages:
+  getLaunchableVersionFromDeployedPackerImages:
     kind: file
     name: Get the latest Launchable version set in packer-images
     dependson:
-      - getPackerImageDeployedVersion
+      - getDeployedPackerImagesVersion
     spec:
-      file: https://raw.githubusercontent.com/jenkins-infra/packer-images/{{ source "getPackerImageDeployedVersion" }}/provisioning/tools-versions.yml
+      file: https://raw.githubusercontent.com/jenkins-infra/packer-images/{{ source "getDeployedPackerImagesVersion" }}/provisioning/tools-versions.yml
       matchpattern: 'launchable_version:\s"(.*)"'
     transformers:
       - findsubmatch:
@@ -37,7 +37,7 @@ sources:
 targets:
   updateVersion:
     name: "Update the launchable version in the Dockerfiles"
-    sourceid: geLaunchableVersionFromPackerImages
+    sourceid: getLaunchableVersionFromDeployedPackerImages
     scmid: default
     kind: file
     spec:
@@ -49,12 +49,12 @@ targets:
       matchpattern: >
         ARG LAUNCHABLE_VERSION=(.*)
       replacepattern: >
-        ARG LAUNCHABLE_VERSION={{ source "geLaunchableVersionFromPackerImages" }}
+        ARG LAUNCHABLE_VERSION={{ source "getLaunchableVersionFromDeployedPackerImages" }}
 
 actions:
   default:
     kind: github/pullrequest
-    title: Bump launchable version to {{ source "geLaunchableVersionFromPackerImages" }}
+    title: Bump launchable version to {{ source "getLaunchableVersionFromDeployedPackerImages" }}
     scmid: default
     spec:
       labels:
