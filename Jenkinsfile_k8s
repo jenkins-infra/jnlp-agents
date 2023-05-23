@@ -1,3 +1,5 @@
+@Library('pipeline-library@pull/673/head') _
+
 properties([buildDiscarder(logRotator(daysToKeepStr: '15'))])
 
 parallel(
@@ -39,7 +41,7 @@ parallel(
     ])
   },
   'updatecli': {
-    updatecli(action: 'diff')
+    updatecli(action: 'diff', debug: true)
     if (env.BRANCH_IS_PRIMARY) {
       updatecli(action: 'apply', config: './updatecli/daily.d', cronTriggerExpression: '@daily')
       updatecli(action: 'apply', config: './updatecli/weekly.d', cronTriggerExpression: '@weekly')
