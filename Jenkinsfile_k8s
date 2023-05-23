@@ -41,8 +41,8 @@ parallel(
   'updatecli': {
     updatecli(action: 'diff')
     if (env.BRANCH_IS_PRIMARY) {
-      updatecli(action: 'apply', config: './updatecli/daily.d', cronTriggerExpression: '@daily')
-      updatecli(action: 'apply', config: './updatecli/weekly.d', cronTriggerExpression: '@weekly')
+      updatecli(action: 'apply', config: './updatecli/updatecli.d/daily.d', cronTriggerExpression: '@daily')
+      updatecli(action: 'apply', config: './updatecli/updatecli.d/weekly.d', cronTriggerExpression: '@weekly')
     }
   },
 )
