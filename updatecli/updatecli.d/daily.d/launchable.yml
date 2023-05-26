@@ -1,0 +1,62 @@
+---
+name: Bump launchable version
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  getDeployedPackerImagesVersion:
+    kind: yaml
+    name: Retrieve the current version of the Packer images used in production in jenkins-infra/jenkins-infra
+    spec:
+      file: https://raw.githubusercontent.com/jenkins-infra/jenkins-infra/production/hieradata/common.yaml
+      key: "profile::jenkinscontroller::jcasc.agent_images.azure_vms_gallery_image.version"
+  # Retrieving Launchable from packer-images to synchronize its version across our infra
+  getLaunchableVersionFromDeployedPackerImages:
+    kind: file
+    name: Get the latest Launchable version set in packer-images
+    dependson:
+      - getDeployedPackerImagesVersion
+    spec:
+      file: https://raw.githubusercontent.com/jenkins-infra/packer-images/{{ source "getDeployedPackerImagesVersion" }}/provisioning/tools-versions.yml
+      matchpattern: 'launchable_version:\s"(.*)"'
+    transformers:
+      - findsubmatch:
+          pattern: 'launchable_version:\s"(.*)"'
+          captureindex: 1
+
+targets:
+  updateVersion:
+    name: "Update the launchable version in the Dockerfiles"
+    sourceid: getLaunchableVersionFromDeployedPackerImages
+    scmid: default
+    kind: file
+    spec:
+      files:
+        - maven/jdk8/Dockerfile.nanoserver
+        - maven/jdk11/Dockerfile.nanoserver
+        - maven/jdk17/Dockerfile.nanoserver
+        - maven/jdk19/Dockerfile.nanoserver
+      matchpattern: >
+        ARG LAUNCHABLE_VERSION=(.*)
+      replacepattern: >
+        ARG LAUNCHABLE_VERSION={{ source "getLaunchableVersionFromDeployedPackerImages" }}
+
+actions:
+  default:
+    kind: github/pullrequest
+    title: Bump launchable version to {{ source "getLaunchableVersionFromDeployedPackerImages" }}
+    scmid: default
+    spec:
+      labels:
+        - enhancement
+        - launchable
