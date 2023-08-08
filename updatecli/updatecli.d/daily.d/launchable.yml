@@ -28,10 +28,10 @@ sources:
       - getDeployedPackerImagesVersion
     spec:
       file: https://raw.githubusercontent.com/jenkins-infra/packer-images/{{ source "getDeployedPackerImagesVersion" }}/provisioning/tools-versions.yml
-      matchpattern: 'launchable_version:\s"(.*)"'
+      matchpattern: 'launchable_version:\s(.*)'
     transformers:
       - findsubmatch:
-          pattern: 'launchable_version:\s"(.*)"'
+          pattern: 'launchable_version:\s(.*)'
           captureindex: 1
 
 targets:
