@@ -1,5 +1,5 @@
 ---
-name: Bump inbound-agent (jdk11-nanoserver-1809) container image version
+name: Bump inbound-agent (jdk17-nanoserver-1809) container image version
 
 scms:
   default:
@@ -36,50 +36,59 @@ conditions:
     spec:
       image: "jenkins/inbound-agent"
       architecture: "amd64"
-      tag: '{{ source "lastReleaseVersion" }}-jdk11-nanoserver-1809'
+      tag: '{{ source "lastReleaseVersion" }}-jdk17-nanoserver-1809'
 
 targets:
   updateJDK8:
-    name: Update inbound-agent (jdk11-nanoserver-1809) container image version for JDK8 image
+    name: Update inbound-agent (jdk17-nanoserver-1809) container image version for JDK8 image
     scmid: default
     kind: dockerfile
     spec:
       file: maven/jdk8/Dockerfile.nanoserver
       instruction:
         keyword: "ARG"
-        matcher: "JAVA11_IMAGE_VERSION"
+        matcher: "JAVA17_IMAGE_VERSION"
   updateJDK11:
-    name: Update inbound-agent (jdk11-nanoserver-1809) container image version for JDK11 image
+    name: Update inbound-agent (jdk17-nanoserver-1809) container image version for JDK11 image
     scmid: default
     kind: dockerfile
     spec:
       file: maven/jdk11/Dockerfile.nanoserver
       instruction:
         keyword: "ARG"
-        matcher: "JAVA11_IMAGE_VERSION"
+        matcher: "JAVA17_IMAGE_VERSION"
   updateJDK17:
-    name: Update inbound-agent (jdk11-nanoserver-1809) container image version for JDK17 image
+    name: Update inbound-agent (jdk17-nanoserver-1809) container image version for JDK17 image
     scmid: default
     kind: dockerfile
     spec:
       file: maven/jdk17/Dockerfile.nanoserver
       instruction:
         keyword: "ARG"
-        matcher: "JAVA11_IMAGE_VERSION"
+        matcher: "JAVA17_IMAGE_VERSION"
   updateJDK19:
-    name: Update inbound-agent (jdk11-nanoserver-1809) container image version for JDK19 image
+    name: Update inbound-agent (jdk17-nanoserver-1809) container image version for JDK19 image
     scmid: default
     kind: dockerfile
     spec:
       file: maven/jdk19/Dockerfile.nanoserver
       instruction:
         keyword: "ARG"
-        matcher: "JAVA11_IMAGE_VERSION"
+        matcher: "JAVA17_IMAGE_VERSION"
+  updateJDK21:
+    name: Update inbound-agent (jdk17-nanoserver-1809) container image version for JDK21 image
+    scmid: default
+    kind: dockerfile
+    spec:
+      file: maven/jdk21/Dockerfile.nanoserver
+      instruction:
+        keyword: "ARG"
+        matcher: "JAVA17_IMAGE_VERSION"
 
 actions:
   default:
     kind: github/pullrequest
-    title: Bump inbound-agent (jdk11) container image version to {{ source "lastReleaseVersion" }}
+    title: Bump inbound-agent (jdk17) container image version to {{ source "lastReleaseVersion" }}
     scmid: default
     spec:
       labels:

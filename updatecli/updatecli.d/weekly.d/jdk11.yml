@@ -1,5 +1,5 @@
 ---
-name: Bump JDK8 version
+name: Bump JDK11 version
 
 scms:
   default:
@@ -16,18 +16,18 @@ scms:
 sources:
   lastReleaseVersion:
     kind: githubrelease
-    name: Get the latest Adoptium JDK8 version
+    name: Get the latest Adoptium JDK11 version
     spec:
       owner: "adoptium"
-      repository: "temurin8-binaries"
+      repository: "temurin11-binaries"
       token: "{{ requiredEnv .github.token }}"
       username: "{{ .github.username }}"
       versionfilter:
         kind: regex
-        # (https://github.com/adoptium/temurin8-binaries/releases/tag/jdk8u345-b01) is OK but jdk8u302-b08.1 is not
-        pattern: "^jdk8u(\\d*)-b(\\d*)$"
+        # jdk-11.0.12+7(https://github.com/adoptium/temurin11-binaries/releases/tag/jdk-11.0.12%2B7) is OK
+        pattern: "^jdk-11.(\\d*).(\\d*).(\\d*)+(\\d*)$"
     transformers:
-      - trimprefix: "jdk"
+      - trimprefix: "jdk-"
 
 conditions:
   checkIfReleaseIsAvailable:
@@ -36,22 +36,26 @@ conditions:
       command: bash ./updatecli/scripts/check-jdk.sh # source input value passed as argument
 
 targets:
-  updateJDK8Version:
+  updateJDK11Version:
+    name: Update the JDK11 version in JDK11 Maven Nanoserver image
     scmid: default
-    name: Update the JDK8 version in the JDK8 Maven Nanoserver image
     kind: dockerfile
     spec:
-      file: maven/jdk8/Dockerfile.nanoserver
+      file: maven/jdk11/Dockerfile.nanoserver
       instruction:
         keyword: "ARG"
         matcher: "JAVA_VERSION"
+    transformers:
+      - replacer:
+          from: +
+          to: _
 
 actions:
   default:
     kind: github/pullrequest
-    title: Bump JDK8 version to {{ source "lastReleaseVersion" }}
+    title: Bump JDK11 version to {{ source "lastReleaseVersion" }}
     scmid: default
     spec:
       labels:
         - enhancement
-        - jdk8
+        - jdk11

@@ -1,6 +1,6 @@
 # escape=`
 ARG JAVA_VERSION=21-jdk
-ARG JAVA11_IMAGE_VERSION=3142.vcfca_0cd92128-1
+ARG JAVA17_IMAGE_VERSION=3142.vcfca_0cd92128-1
 ARG PYTHON_VERSION=3.11.3
 
 FROM python:"${PYTHON_VERSION}"-windowsservercore-1809 AS python
@@ -11,8 +11,8 @@ RUN "C:/Python/python.exe" -m pip install --no-cache-dir --upgrade pip; `
 
 ## Comment out once temurin publishes an official JDK21 container image
 #FROM eclipse-temurin:${JAVA_VERSION}-jdk-windowsservercore-1809 AS core
-# Use inbound-agent's JDK11 only for running jenkins agent, not as default java
-FROM jenkins/inbound-agent:"${JAVA11_IMAGE_VERSION}"-jdk11-nanoserver-1809
+# Use inbound-agent's jdk17 only for running jenkins agent, not as default java
+FROM jenkins/inbound-agent:"${JAVA17_IMAGE_VERSION}"-jdk17-nanoserver-1809
 
 # ProgressPreference => Disable Progress bar for faster downloads
 SHELL ["pwsh.exe", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
@@ -30,7 +30,7 @@ COPY --from=python C:/Python $pythonDir
 ARG launchableVersion=1.65.0
 RUN python.exe -m pip install --no-cache-dir launchable=="${env:launchableVersion}";
 
-# Retrieve JDK11 for running jenkins agent process but do not use it as default
+# Retrieve jdk17 for running jenkins agent process but do not use it as default
 # Use ENV and not ARG : https://docs.docker.com/engine/reference/builder/#using-arg-variables
 ENV JAVA_HOME="$toolsDir\jdk-21"
 ENV PATH="${JAVA_HOME}\bin;${PATH}"

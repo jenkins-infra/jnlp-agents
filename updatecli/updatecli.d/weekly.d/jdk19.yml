@@ -38,7 +38,7 @@ conditions:
 
 targets:
   updateJDK19Version:
-    name: Update the JDK19 version in the Packer default values
+    name: Update the JDK19 version in the JDK19 Windows Nanoserver image
     scmid: default
     kind: dockerfile
     transformers:
