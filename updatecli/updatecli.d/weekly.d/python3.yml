@@ -44,6 +44,17 @@ targets:
         ARG PYTHON_VERSION=(.*)
       replacepattern: >
         ARG PYTHON_VERSION={{ source "lastReleaseVersion" }}
+  updateTestHarness:
+    name: "Update the python3 version in the test harness"
+    sourceid: lastReleaseVersion
+    scmid: default
+    kind: file
+    spec:
+      file: common-cst-windows.yml
+      matchpattern: >
+        \["Python (.*)"]
+      replacepattern: >
+        ["Python {{ source "lastReleaseVersion" }}"]
 
 actions:
   default:

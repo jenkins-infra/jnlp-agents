@@ -1,10 +1,10 @@
 schemaVersion: 2.0.0
 
 commandTests:
-  - name: "Check that `java` is present in the PATH and match jdk11"
+  - name: "Check that `java` is present in the PATH and match jdk21"
     command: "cmd.exe"
     args: ["/C", "java", "--version"]
-    expectedOutput: ["Temurin-11"]
+    expectedOutput: ["Temurin-21"]
   - name: "Check that `java 17` is present in C:/openjdk-17 for agent processes"
     command: "cmd.exe"
     args: ["/C", "C:/openjdk-17/bin/java", "--version"]

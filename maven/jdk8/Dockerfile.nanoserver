@@ -1,6 +1,6 @@
 # escape=`
-ARG JAVA_VERSION=8u372-b07
-ARG JAVA11_IMAGE_VERSION=3107.v665000b_51092-15
+ARG JAVA_VERSION=8u382-b05
+ARG JAVA17_IMAGE_VERSION=3148.v532a_7e715ee3-1
 ARG PYTHON_VERSION=3.11.3
 
 FROM python:"${PYTHON_VERSION}"-windowsservercore-1809 AS python
@@ -10,8 +10,8 @@ RUN "C:/Python/python.exe" -m pip install --no-cache-dir --upgrade pip; `
   pip install --no-cache-dir setuptools wheel;
 
 FROM eclipse-temurin:${JAVA_VERSION}-jdk-windowsservercore-1809 AS core
-# Use inbound-agent's JDK11 only for running jenkins agent, not as default java
-FROM jenkins/inbound-agent:${JAVA11_IMAGE_VERSION}-jdk11-nanoserver-1809
+# Use inbound-agent's jdk17 only for running jenkins agent, not as default java
+FROM jenkins/inbound-agent:${JAVA17_IMAGE_VERSION}-jdk17-nanoserver-1809
 
 # ProgressPreference => Disable Progress bar for faster downloads
 SHELL ["pwsh.exe", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
@@ -31,7 +31,7 @@ COPY --from=core C:/openjdk-8 "${JAVA_HOME}"
 # https://github.com/StefanScherer/dockerfiles-windows/tree/master/golang-issue-21867
 COPY --from=core C:/windows/system32/netapi32.dll C:/windows/system32/netapi32.dll
 
-ARG MAVEN_VERSION=3.9.2
+ARG MAVEN_VERSION=3.9.4
 RUN Invoke-WebRequest -Uri "https://archive.apache.org/dist/maven/maven-3/${env:MAVEN_VERSION}/binaries/apache-maven-${env:MAVEN_VERSION}-bin.zip" -OutFile ${env:TEMP}/apache-maven.zip ; `
   Expand-Archive -Path "${env:TEMP}/apache-maven.zip -Destination" C:/tools ; `
   Remove-Item ${env:TEMP}/apache-maven.zip ;

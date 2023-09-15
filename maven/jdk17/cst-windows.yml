@@ -5,7 +5,7 @@ commandTests:
     command: "cmd.exe"
     args: ["/C", "java", "--version"]
     expectedOutput: ["Temurin-17"]
-  - name: "Check that `java 11` is present in C:/openjdk-11"
+  - name: "Check that `java 17` is present in C:/openjdk-17 for agent processes"
     command: "cmd.exe"
-    args: ["/C", "C:/openjdk-11/bin/java", "--version"]
-    expectedOutput: ["Temurin-11"]
+    args: ["/C", "C:/openjdk-17/bin/java", "--version"]
+    expectedOutput: ["Temurin-17"]
