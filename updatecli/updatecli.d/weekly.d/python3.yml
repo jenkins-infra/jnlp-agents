@@ -52,7 +52,7 @@ targets:
     spec:
       file: common-cst-windows.yml
       matchpattern: >
-        "Python (.*)"
+        \"Python (.*)\"
       replacepattern: >
         "Python {{ source "lastReleaseVersion" }}"
 
