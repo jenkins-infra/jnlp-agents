@@ -45,7 +45,6 @@ targets:
         - maven/jdk8/Dockerfile.nanoserver
         - maven/jdk11/Dockerfile.nanoserver
         - maven/jdk17/Dockerfile.nanoserver
-        - maven/jdk19/Dockerfile.nanoserver
       matchpattern: >
         ARG LAUNCHABLE_VERSION=(.*)
       replacepattern: >
