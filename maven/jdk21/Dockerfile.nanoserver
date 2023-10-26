@@ -27,8 +27,8 @@ ENV PATH="${pythonDir};${pythonDir}\Scripts;${PATH}"
 COPY --from=python C:/Python $pythonDir
 
 # Install Launchable in this layer
-ARG launchableVersion=1.65.0
-RUN python.exe -m pip install --no-cache-dir launchable=="${env:launchableVersion}";
+ARG LAUNCHABLE_VERSION=1.66.0
+RUN "C:/tools/python/python.exe" -m pip install --no-cache-dir launchable=="${env:LAUNCHABLE_VERSION}";
 
 # Retrieve jdk17 for running jenkins agent process but do not use it as default
 # Use ENV and not ARG : https://docs.docker.com/engine/reference/builder/#using-arg-variables

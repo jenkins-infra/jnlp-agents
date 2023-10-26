@@ -73,6 +73,16 @@ targets:
         keyword: "ARG"
         matcher: "MAVEN_VERSION"
     scmid: default
+  updateMavenJdk21NanoserverVersion:
+    name: Update the Maven version for the JDK21 container image
+    kind: dockerfile
+    sourceid: getMavenVersionFromPackerImages
+    spec:
+      file: maven/jdk21/Dockerfile.nanoserver
+      instruction:
+        keyword: "ARG"
+        matcher: "MAVEN_VERSION"
+    scmid: default
 
 actions:
   default:
