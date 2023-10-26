@@ -66,15 +66,6 @@ targets:
       instruction:
         keyword: "ARG"
         matcher: "JAVA17_IMAGE_VERSION"
-  updateJDK19:
-    name: Update inbound-agent (jdk17-nanoserver-1809) container image version for JDK19 image
-    scmid: default
-    kind: dockerfile
-    spec:
-      file: maven/jdk19/Dockerfile.nanoserver
-      instruction:
-        keyword: "ARG"
-        matcher: "JAVA17_IMAGE_VERSION"
   updateJDK21:
     name: Update inbound-agent (jdk17-nanoserver-1809) container image version for JDK21 image
     scmid: default
