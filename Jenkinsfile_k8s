@@ -1,3 +1,5 @@
+@Library('pipeline-library@pull/849/head') _
+
 properties([buildDiscarder(logRotator(daysToKeepStr: '15'))])
 
 parallel(
