@@ -27,29 +27,17 @@ sources:
         # jdk-17.0.2+8(https://github.com/adoptium/temurin17-binaries/releases/tag/jdk-17.0.2%2B8) is OK
         # jdk-17.0.4.1+1(https://github.com/adoptium/temurin17-binaries/releases/tag/jdk-17.0.4.1%2B1) is OK
         pattern: "^jdk-17.(\\d*).(\\d*).(\\d*)(.(\\d*))+(\\d*)$"
-    transformers:
-      - trimprefix: "jdk-"
-
-conditions:
-  checkIfReleaseIsAvailable:
-    kind: shell
-    spec:
-      command: bash ./updatecli/scripts/check-jdk.sh # source input value passed as argument
 
 targets:
   updateJDK17Version:
     name: Update the JDK17 version in the JDK17 Maven Nanoserver image
-    scmid: default
     kind: dockerfile
     spec:
       file: maven/jdk17/Dockerfile.nanoserver
       instruction:
         keyword: "ARG"
         matcher: "JAVA_VERSION"
-    transformers:
-      - replacer:
-          from: +
-          to: _
+    scmid: default
 
 actions:
   default:

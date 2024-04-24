@@ -26,18 +26,9 @@ sources:
         kind: regex
         # (https://github.com/adoptium/temurin8-binaries/releases/tag/jdk8u345-b01) is OK but jdk8u302-b08.1 is not
         pattern: "^jdk8u(\\d*)-b(\\d*)$"
-    transformers:
-      - trimprefix: "jdk"
-
-conditions:
-  checkIfReleaseIsAvailable:
-    kind: shell
-    spec:
-      command: bash ./updatecli/scripts/check-jdk.sh # source input value passed as argument
 
 targets:
   updateJDK8Version:
-    scmid: default
     name: Update the JDK8 version in the JDK8 Maven Nanoserver image
     kind: dockerfile
     spec:
@@ -45,6 +36,7 @@ targets:
       instruction:
         keyword: "ARG"
         matcher: "JAVA_VERSION"
+    scmid: default
 
 actions:
   default:
