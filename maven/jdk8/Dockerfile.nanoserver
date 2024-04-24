@@ -13,7 +13,7 @@ RUN "C:/Python/python.exe" -m pip install --no-cache-dir --upgrade pip; `
 
 # Adding jdk8 from Adoptium MSI installer (cannot only run msiexec.exe on ServerCore, NOT on nanoserver)
 # WARNING: JDK8 has a different URL pattern than the others (/jdk8<...>/ instead of /jdk-17<...>/)
-ARG JAVA_VERSION=jdk8u402-b06
+ARG JAVA_VERSION=jdk8u412-b08
 RUN New-Item -ItemType Directory -Path C:\temp | Out-Null ; `
     $msiUrl = 'https://api.adoptium.net/v3/installer/version/{0}/windows/x64/jdk/hotspot/normal/eclipse?project=jdk' -f $env:JAVA_VERSION.Replace('+', '%2B') ; `
     Invoke-WebRequest $msiUrl -OutFile 'C:\temp\jdk.msi' ; `
