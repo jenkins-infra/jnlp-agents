@@ -19,7 +19,7 @@ sources:
     name: Get the latest jenkinsci:docker-inbound-agent
     spec:
       owner: "jenkinsci"
-      repository: "docker-inbound-agent"
+      repository: "docker-agent"
       token: "{{ requiredEnv .github.token }}"
       username: "{{ .github.username }}"
       versionfilter:
