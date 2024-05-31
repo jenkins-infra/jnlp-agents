@@ -42,7 +42,7 @@ COPY --from=python-core C:/javaruntime $JAVA_HOME
 COPY --from=python-core C:/windows/system32/netapi32.dll C:/windows/system32/netapi32.dll
 COPY --from=python-core C:/windows/system32/whoami.exe C:/windows/system32/whoami.exe
 
-ARG MAVEN_VERSION=3.9.6
+ARG MAVEN_VERSION=3.9.7
 RUN Invoke-WebRequest -Uri "https://archive.apache.org/dist/maven/maven-3/${env:MAVEN_VERSION}/binaries/apache-maven-${env:MAVEN_VERSION}-bin.zip" -OutFile ${env:TEMP}/apache-maven.zip ; `
   Expand-Archive -Path "${env:TEMP}/apache-maven.zip -Destination" C:/tools ; `
   Remove-Item ${env:TEMP}/apache-maven.zip ;
