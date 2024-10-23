@@ -12,7 +12,7 @@ RUN "C:/Python/python.exe" -m pip install --no-cache-dir --upgrade pip; `
   pip install --no-cache-dir setuptools wheel;
 
 # Adding jdk17 from Adoptium MSI installer (cannot only run msiexec.exe on ServerCore, NOT on nanoserver)
-ARG JAVA_VERSION=jdk-17.0.12+7
+ARG JAVA_VERSION=jdk-17.0.13+11
 RUN New-Item -ItemType Directory -Path C:\temp | Out-Null ; `
     $msiUrl = 'https://api.adoptium.net/v3/installer/version/{0}/windows/x64/jdk/hotspot/normal/eclipse?project=jdk' -f $env:JAVA_VERSION.Replace('+', '%2B') ; `
     Invoke-WebRequest $msiUrl -OutFile 'C:\temp\jdk.msi' ; `
