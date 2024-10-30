@@ -1,5 +1,5 @@
 # escape=`
-ARG JAVA17_IMAGE_VERSION=3273.v4cfe589b_fd83-1
+ARG JAVA17_IMAGE_VERSION=3273.v4cfe589b_fd83-2
 ARG PYTHON_VERSION=3.12.6
 
 FROM python:"${PYTHON_VERSION}"-windowsservercore-1809 AS python-core
