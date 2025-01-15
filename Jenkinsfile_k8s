@@ -33,13 +33,4 @@ parallel(
       imageDir: 'maven/jdk21',
     ])
   },
-  'updatecli': {
-    // Test all configs
-    updatecli(action: 'diff')
-    if (env.BRANCH_IS_PRIMARY) {
-      // Execute config daily or weekly depending on their folder
-      updatecli(action: 'apply', config: './updatecli/updatecli.d/daily.d', cronTriggerExpression: '@daily')
-      updatecli(action: 'apply', config: './updatecli/updatecli.d/weekly.d', cronTriggerExpression: '@weekly')
-    }
-  },
 )
